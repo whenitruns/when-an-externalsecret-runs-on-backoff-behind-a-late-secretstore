@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rr13-p2
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rr13-p2-src
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-credentials
+  namespace: rr13-p2-src
+stringData:
+  token: value-1
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rr13-reader
+  namespace: rr13-p2
+---
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: rr13-k8s
+  namespace: rr13-p2
+spec:
+  provider:
+    kubernetes:
+      remoteNamespace: rr13-p2-src
+      server:
+        caProvider:
+          type: ConfigMap
+          name: kube-root-ca.crt
+          key: ca.crt
+      auth:
+        serviceAccount:
+          name: rr13-reader

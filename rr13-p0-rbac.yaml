@@ -1,0 +1,33 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: rr13-reader
+  namespace: rr13-p0-src
+rules:
+- apiGroups: [""]
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - selfsubjectrulesreviews
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rr13-reader
+  namespace: rr13-p0-src
+subjects:
+- kind: ServiceAccount
+  name: rr13-reader
+  namespace: rr13-p0
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rr13-reader
